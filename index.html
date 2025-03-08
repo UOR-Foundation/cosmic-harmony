@@ -1,0 +1,1577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Harmony: Mathematical Patterns Across Scales</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/tone@14.7.77/build/Tone.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --text-color: #f8fafc;
+            --primary: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --dark: #1e1b4b;
+            --light: #f3f4f6;
+            --gray: #64748b;
+            --green: #10b981;
+            --yellow: #f59e0b;
+            --red: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 3rem 1rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.3) 0%, transparent 30%),
+                        radial-gradient(circle at 80% 70%, rgba(236, 72, 153, 0.3) 0%, transparent 30%);
+            z-index: 0;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+        
+        h2 {
+            font-size: 2rem;
+            margin: 1.5rem 0 1rem;
+            color: var(--primary-light);
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+            margin: 1rem 0 0.5rem;
+            color: var(--accent);
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .grid-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .card {
+            background-color: rgba(30, 41, 59, 0.8);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            padding: 1.5rem;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .visualization {
+            height: 300px;
+            background-color: rgba(15, 23, 42, 0.7);
+            border-radius: 8px;
+            margin: 1rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-light);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--primary-light);
+            border: 1px solid var(--primary-light);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(79, 70, 229, 0.1);
+        }
+
+        .fact-box {
+            background-color: rgba(79, 70, 229, 0.1);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .fact-title {
+            font-weight: 600;
+            color: var(--primary-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .slider-container {
+            margin-bottom: 1rem;
+        }
+
+        .slider-container label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--primary);
+        }
+
+        footer {
+            background-color: var(--dark);
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+
+        #particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .tooltip {
+            position: absolute;
+            padding: 0.5rem;
+            background-color: rgba(15, 23, 42, 0.9);
+            border-radius: 4px;
+            pointer-events: none;
+            font-size: 0.8rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            max-width: 200px;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .tooltip.visible {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .discovery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .discovery-item {
+            background-color: rgba(30, 41, 59, 0.8);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .discovery-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+        }
+
+        .discovery-title {
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            color: var(--primary-light);
+        }
+
+        .note {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-top: 1rem;
+            font-style: italic;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .grid-section {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Highlight for equations */
+        .equation {
+            font-family: 'Georgia', serif;
+            background-color: rgba(79, 70, 229, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            display: inline-block;
+            margin: 0.5rem 0;
+        }
+
+        /* Wave animation */
+        @keyframes wave {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+
+        .wave-animation {
+            animation: wave 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div id="particles"></div>
+        <h1>Cosmic Harmony</h1>
+        <p class="subtitle">Mathematical Patterns Across Scales</p>
+    </header>
+    
+    <div class="container">
+        <p>The universe speaks in the language of mathematics, expressing itself through recurring patterns that manifest across vastly different scales and domains. From the atomic to the astronomical, from quiet crystalline structures to the vibrant melodies of music, the same fundamental mathematical relationships emerge again and again.</p>
+        
+        <div class="card">
+            <div class="card-header">The Prime Framework: A Mathematical Foundation</div>
+            <div class="card-content">
+                <p>The patterns and structures we observe across different scales and phenomena can be understood through the Prime Framework—a unified mathematical system built on four fundamental axioms:</p>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                    <div style="background-color: rgba(79, 70, 229, 0.1); padding: 1rem; border-radius: 8px; border-left: 4px solid var(--primary);">
+                        <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">Reference Manifold</h3>
+                        <p style="font-size: 0.9rem;">A smooth, connected manifold equipped with a metric tensor that provides the geometric arena for all mathematical objects. This manifold serves as the universal stage upon which mathematical structures exist and interact.</p>
+                    </div>
+                    
+                    <div style="background-color: rgba(79, 70, 229, 0.1); padding: 1rem; border-radius: 8px; border-left: 4px solid var(--primary);">
+                        <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">Algebraic Fibers</h3>
+                        <p style="font-size: 0.9rem;">At each point in the manifold, there exists an algebraic structure (typically a Clifford algebra) that encodes local information. These fibers allow multiple representations of mathematical objects to coexist in a unified framework.</p>
+                    </div>
+                    
+                    <div style="background-color: rgba(79, 70, 229, 0.1); padding: 1rem; border-radius: 8px; border-left: 4px solid var(--primary);">
+                        <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">Symmetry Group Action</h3>
+                        <p style="font-size: 0.9rem;">A Lie group that acts as transformations on the manifold and lifts to the fiber algebras. These symmetries ensure that mathematical truths are preserved under change of perspective or representation.</p>
+                    </div>
+                    
+                    <div style="background-color: rgba(79, 70, 229, 0.1); padding: 1rem; border-radius: 8px; border-left: 4px solid var(--primary);">
+                        <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">Coherence Inner Product</h3>
+                        <p style="font-size: 0.9rem;">A positive-definite inner product on each fiber that forces consistency across different representations of the same object. This coherence principle selects the minimal-energy configuration from all possible states.</p>
+                    </div>
+                </div>
+                
+                <p>Within this framework, mathematical objects have unique canonical representations, and fundamental structures—from prime numbers to quantum fields—emerge naturally from these axioms rather than being imposed externally.</p>
+                
+                <p>The Prime Framework reveals that the patterns we observe across multiple domains—music, biology, physics, and cosmology—are not coincidental but necessary consequences of these underlying mathematical principles. It provides a unified explanation for why the same relationships appear across vastly different scales.</p>
+            </div>
+        </div>
+        
+        <div class="fact-box">
+            <div class="fact-title">Structural Universality</div>
+            <p>The Prime Framework demonstrates that the mathematical structures governing quantum resonance patterns, musical harmony, and cosmic microwave background fluctuations share striking similarities because they all emerge from the same four axioms. These patterns are expressions of the universe's intrinsic mathematical nature, with each system representing a different manifestation of the same underlying principles.</p>
+        </div>
+        
+        <div id="app-root">
+            <!-- React app will be mounted here -->
+            <div style="display: flex; justify-content: center; align-items: center; height: 300px;">
+                <div style="width: 50px; height: 50px; border: 5px solid var(--light); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2025 Cosmic Harmony Project</p>
+        <p>An exploration of universal mathematical patterns</p>
+    </footer>
+    
+    <script type="text/babel">
+        // Main React application
+        const App = () => {
+            const [audioReady, setAudioReady] = React.useState(false);
+            const [activeTab, setActiveTab] = React.useState('music');
+            
+            // Handler for starting audio context
+            const initAudio = () => {
+                Tone.start().then(() => {
+                    console.log("Audio context started");
+                    setAudioReady(true);
+                }).catch(err => {
+                    console.error("Could not start audio context:", err);
+                });
+            };
+            
+            return (
+                <div>
+                    {!audioReady && (
+                        <div style={{
+                            padding: "20px",
+                            backgroundColor: "rgba(30, 41, 59, 0.8)",
+                            borderRadius: "12px",
+                            margin: "20px auto",
+                            textAlign: "center",
+                            maxWidth: "600px"
+                        }}>
+                            <h3>Interactive Experience</h3>
+                            <p>This exploration includes audio demonstrations of mathematical harmony.</p>
+                            <button 
+                                className="btn" 
+                                style={{margin: "20px auto"}}
+                                onClick={initAudio}
+                            >
+                                Enable Audio
+                            </button>
+                        </div>
+                    )}
+                    
+                    {audioReady && (
+                        <>
+                            <div className="controls" style={{justifyContent: "center", marginTop: "2rem"}}>
+                                <button 
+                                    className={`btn ${activeTab === 'music' ? '' : 'btn-secondary'}`}
+                                    onClick={() => setActiveTab('music')}
+                                >
+                                    Music & Mathematics
+                                </button>
+                                <button 
+                                    className={`btn ${activeTab === 'nature' ? '' : 'btn-secondary'}`}
+                                    onClick={() => setActiveTab('nature')}
+                                >
+                                    Nature's Patterns
+                                </button>
+                                <button 
+                                    className={`btn ${activeTab === 'cosmos' ? '' : 'btn-secondary'}`}
+                                    onClick={() => setActiveTab('cosmos')}
+                                >
+                                    Cosmic Structures
+                                </button>
+                            </div>
+                            
+                            <div className={activeTab === 'music' ? '' : 'hidden'}>
+                                <HarmonicSeriesExplorer />
+                            </div>
+                            
+                            <div className={activeTab === 'nature' ? '' : 'hidden'}>
+                                <NaturalPatterns />
+                            </div>
+                            
+                            <div className={activeTab === 'cosmos' ? '' : 'hidden'}>
+                                <CosmicStructures />
+                            </div>
+                            
+                            <CosmicDiscoveries />
+                        </>
+                    )}
+                </div>
+            );
+        };
+        
+        // Harmonic Series Explorer Component
+        const HarmonicSeriesExplorer = () => {
+            const [fundamentalFreq, setFundamentalFreq] = React.useState(220);
+            const [harmonicCount, setHarmonicCount] = React.useState(8);
+            const [activeHarmonic, setActiveHarmonic] = React.useState(null);
+            const [isPlaying, setIsPlaying] = React.useState(false);
+            const synthRef = React.useRef(null);
+            const visualizationRef = React.useRef(null);
+            
+            React.useEffect(() => {
+                // Initialize synth
+                synthRef.current = new Tone.PolySynth(Tone.Synth).toDestination();
+                synthRef.current.set({
+                    volume: -10,
+                    envelope: {
+                        attack: 0.1,
+                        decay: 0.2,
+                        sustain: 0.5,
+                        release: 1.5
+                    }
+                });
+                
+                return () => {
+                    if (synthRef.current) {
+                        synthRef.current.dispose();
+                    }
+                };
+            }, []);
+            
+            React.useEffect(() => {
+                // Set up D3 visualization
+                if (visualizationRef.current) {
+                    setupVisualization();
+                }
+            }, [fundamentalFreq, harmonicCount]);
+            
+            const setupVisualization = () => {
+                const container = visualizationRef.current;
+                d3.select(container).selectAll("svg").remove();
+                
+                const width = container.clientWidth;
+                const height = container.clientHeight;
+                
+                const svg = d3.select(container)
+                    .append("svg")
+                    .attr("width", width)
+                    .attr("height", height);
+                
+                // Generate data for harmonics
+                const harmonics = Array.from({length: harmonicCount}, (_, i) => {
+                    const n = i + 1;
+                    return {
+                        n: n,
+                        frequency: fundamentalFreq * n,
+                        amplitude: 1 / n,
+                        ratio: `1:${n}`,
+                        note: getNoteName(fundamentalFreq * n)
+                    };
+                });
+                
+                // Set up scales
+                const xScale = d3.scaleLinear()
+                    .domain([0, harmonicCount])
+                    .range([50, width - 50]);
+                
+                const yScale = d3.scaleLinear()
+                    .domain([0, 1])
+                    .range([height - 50, 50]);
+                
+                // Draw axes
+                svg.append("line")
+                    .attr("x1", 50)
+                    .attr("y1", height - 50)
+                    .attr("x2", width - 50)
+                    .attr("y2", height - 50)
+                    .attr("stroke", "rgba(255, 255, 255, 0.2)")
+                    .attr("stroke-width", 1);
+                
+                svg.append("text")
+                    .attr("x", width - 40)
+                    .attr("y", height - 50)
+                    .attr("fill", "rgba(255, 255, 255, 0.7)")
+                    .attr("font-size", "12px")
+                    .text("Harmonic");
+                
+                // Draw bars for each harmonic
+                svg.selectAll(".harmonic-bar")
+                    .data(harmonics)
+                    .enter()
+                    .append("rect")
+                    .attr("class", "harmonic-bar")
+                    .attr("x", (d, i) => xScale(i) - 15)
+                    .attr("y", d => yScale(d.amplitude))
+                    .attr("width", 30)
+                    .attr("height", d => height - 50 - yScale(d.amplitude))
+                    .attr("fill", (d, i) => `hsl(${260 + i * 30}, 70%, 60%)`)
+                    .attr("stroke", "#0f172a")
+                    .attr("stroke-width", 1)
+                    .attr("rx", 2)
+                    .attr("ry", 2)
+                    .attr("cursor", "pointer")
+                    .attr("opacity", 0.8)
+                    .on("mouseover", function(event, d) {
+                        d3.select(this).attr("opacity", 1);
+                        showTooltip(event, `Harmonic: ${d.n}<br>Frequency: ${d.frequency.toFixed(1)} Hz<br>Note: ${d.note}<br>Ratio: ${d.ratio}`);
+                    })
+                    .on("mouseout", function() {
+                        d3.select(this).attr("opacity", 0.8);
+                        hideTooltip();
+                    })
+                    .on("click", function(event, d) {
+                        playHarmonic(d.n);
+                    });
+                
+                // Add labels
+                svg.selectAll(".harmonic-label")
+                    .data(harmonics)
+                    .enter()
+                    .append("text")
+                    .attr("class", "harmonic-label")
+                    .attr("x", (d, i) => xScale(i))
+                    .attr("y", height - 35)
+                    .attr("text-anchor", "middle")
+                    .attr("fill", "rgba(255, 255, 255, 0.7)")
+                    .attr("font-size", "12px")
+                    .text(d => d.n);
+                
+                // Add frequency labels
+                svg.selectAll(".frequency-label")
+                    .data(harmonics)
+                    .enter()
+                    .append("text")
+                    .attr("class", "frequency-label")
+                    .attr("x", (d, i) => xScale(i))
+                    .attr("y", d => yScale(d.amplitude) - 10)
+                    .attr("text-anchor", "middle")
+                    .attr("fill", "rgba(255, 255, 255, 0.7)")
+                    .attr("font-size", "10px")
+                    .text(d => d.note);
+            };
+            
+            const playHarmonic = (n) => {
+                if (!synthRef.current) return;
+                
+                setActiveHarmonic(n);
+                const freq = fundamentalFreq * n;
+                synthRef.current.triggerAttackRelease(freq, "2n");
+                
+                // Highlight the bar
+                d3.select(visualizationRef.current)
+                    .selectAll(".harmonic-bar")
+                    .attr("opacity", (d, i) => d.n === n ? 1 : 0.4);
+                
+                // Reset after playing
+                setTimeout(() => {
+                    setActiveHarmonic(null);
+                    d3.select(visualizationRef.current)
+                        .selectAll(".harmonic-bar")
+                        .attr("opacity", 0.8);
+                }, 1000);
+            };
+            
+            const playChord = () => {
+                if (!synthRef.current) return;
+                
+                setIsPlaying(true);
+                
+                // Play fundamental and selected harmonics
+                const notes = [fundamentalFreq];
+                if (harmonicCount >= 3) notes.push(fundamentalFreq * 3); // Perfect fifth
+                if (harmonicCount >= 5) notes.push(fundamentalFreq * 5); // Major third
+                
+                synthRef.current.triggerAttackRelease(notes, "2n");
+                
+                // Highlight all involved bars
+                d3.select(visualizationRef.current)
+                    .selectAll(".harmonic-bar")
+                    .attr("opacity", (d) => [1, 3, 5].includes(d.n) ? 1 : 0.4);
+                
+                // Reset after playing
+                setTimeout(() => {
+                    setIsPlaying(false);
+                    d3.select(visualizationRef.current)
+                        .selectAll(".harmonic-bar")
+                        .attr("opacity", 0.8);
+                }, 2000);
+            };
+            
+            const playArpeggio = () => {
+                if (!synthRef.current) return;
+                
+                setIsPlaying(true);
+                
+                // Play sequence of harmonics
+                const sequence = Array.from({length: harmonicCount}, (_, i) => i + 1);
+                let index = 0;
+                
+                const playNext = () => {
+                    if (index >= sequence.length) {
+                        setTimeout(() => {
+                            setIsPlaying(false);
+                            d3.select(visualizationRef.current)
+                                .selectAll(".harmonic-bar")
+                                .attr("opacity", 0.8);
+                        }, 500);
+                        return;
+                    }
+                    
+                    const n = sequence[index];
+                    setActiveHarmonic(n);
+                    
+                    // Play the note
+                    synthRef.current.triggerAttackRelease(fundamentalFreq * n, "8n");
+                    
+                    // Highlight the bar
+                    d3.select(visualizationRef.current)
+                        .selectAll(".harmonic-bar")
+                        .attr("opacity", (d) => d.n === n ? 1 : 0.4);
+                    
+                    index++;
+                    setTimeout(playNext, 300);
+                };
+                
+                playNext();
+            };
+            
+            // Helper function to get approximate note name
+            const getNoteName = (freq) => {
+                const noteNames = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+                const a4 = 440;
+                const a4Index = 69; // MIDI note number for A4
+                
+                // Calculate MIDI note number
+                const noteNumber = Math.round(12 * Math.log2(freq / a4) + a4Index);
+                const octave = Math.floor(noteNumber / 12) - 1;
+                const noteName = noteNames[noteNumber % 12];
+                
+                return `${noteName}${octave}`;
+            };
+            
+            // Tooltip helpers
+            const showTooltip = (event, html) => {
+                const tooltip = document.getElementById("tooltip");
+                if (!tooltip) return;
+                
+                tooltip.innerHTML = html;
+                tooltip.style.left = `${event.pageX + 10}px`;
+                tooltip.style.top = `${event.pageY - 25}px`;
+                tooltip.classList.add("visible");
+            };
+            
+            const hideTooltip = () => {
+                const tooltip = document.getElementById("tooltip");
+                if (!tooltip) return;
+                tooltip.classList.remove("visible");
+            };
+            
+            return (
+                <div>
+                    <h2>The Mathematics of Musical Harmony</h2>
+                    <p>The harmonic series—integer multiples of a fundamental frequency—forms the foundation of musical consonance and scale construction. Ancient civilizations discovered these relationships through the ratios of string lengths, but we now know they emerge from the physics of vibrating systems.</p>
+                    
+                    <div className="card">
+                        <div className="card-header">Harmonic Series Explorer</div>
+                        <div className="card-content">
+                            <div className="slider-container">
+                                <label>Fundamental Frequency: {fundamentalFreq} Hz ({getNoteName(fundamentalFreq)})</label>
+                                <input 
+                                    type="range" 
+                                    min="110" 
+                                    max="440" 
+                                    step="1" 
+                                    value={fundamentalFreq} 
+                                    onChange={(e) => setFundamentalFreq(Number(e.target.value))}
+                                />
+                            </div>
+                            
+                            <div className="slider-container">
+                                <label>Number of Harmonics: {harmonicCount}</label>
+                                <input 
+                                    type="range" 
+                                    min="3" 
+                                    max="16" 
+                                    step="1" 
+                                    value={harmonicCount} 
+                                    onChange={(e) => setHarmonicCount(Number(e.target.value))}
+                                />
+                            </div>
+                            
+                            <div ref={visualizationRef} className="visualization"></div>
+                            
+                            <div className="controls">
+                                <button className="btn" onClick={playChord} disabled={isPlaying}>
+                                    Play Harmonic Chord
+                                </button>
+                                <button className="btn btn-secondary" onClick={playArpeggio} disabled={isPlaying}>
+                                    Play Harmonic Series
+                                </button>
+                            </div>
+                            
+                            <div id="tooltip" className="tooltip"></div>
+                            
+                            <p className="note">Click on individual bars to hear each harmonic. The most consonant intervals occur at simple integer ratios: 2:1 (octave), 3:2 (perfect fifth), 5:4 (major third).</p>
+                        </div>
+                    </div>
+                    
+                    <div className="grid-section">
+                        <div className="card">
+                            <div className="card-header">Just Intonation vs. Equal Temperament</div>
+                            <div className="card-content">
+                                <p>Western tuning is a mathematical compromise. Equal temperament divides the octave into 12 equal parts, allowing music to be played in any key, but sacrificing the pure integer ratios of just intonation.</p>
+                                
+                                <div style={{margin: "1rem 0"}}>
+                                    <p><strong>Perfect Fifth (Just):</strong> Ratio 3:2 = 1.5</p>
+                                    <p><strong>Perfect Fifth (Equal):</strong> 2<sup>7/12</sup> ≈ 1.498</p>
+                                    <div className="equation">Deviation: 0.1% (2 cents)</div>
+                                    
+                                    <br/>
+                                    
+                                    <p><strong>Major Third (Just):</strong> Ratio 5:4 = 1.25</p>
+                                    <p><strong>Major Third (Equal):</strong> 2<sup>4/12</sup> ≈ 1.260</p>
+                                    <div className="equation">Deviation: 0.8% (14 cents)</div>
+                                </div>
+                                
+                                <p>This mathematical tension between pure intervals and practical playability is one of music's fundamental constraints, revealing how mathematical structures both enable and limit human expression.</p>
+                            </div>
+                        </div>
+                        
+                        <div className="card">
+                            <div className="card-header">Waveform Superposition</div>
+                            <div className="card-content">
+                                <p>When multiple frequencies sound together, the resulting waveform is a superposition of sine waves. This mathematical property explains why certain combinations create consonance while others create dissonance.</p>
+                                
+                                <div className="equation">
+                                    f(t) = A₁sin(2πf₁t) + A₂sin(2πf₂t) + ... + A<sub>n</sub>sin(2πf<sub>n</sub>t)
+                                </div>
+                                
+                                <p>The beauty of a musical tone comes from its harmonic structure—how the overtones (integer multiples of the fundamental) combine in relative amplitude. Each instrument has a unique harmonic signature or "timbre," which is essentially its mathematical fingerprint.</p>
+                                
+                                <p>Recent studies in neuroscience show that our perception of consonance relates to how efficiently our brains can process these mathematical patterns, explaining why humans across cultures tend to prefer certain harmonic relationships.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+        
+        // Natural Patterns Component
+        const NaturalPatterns = () => {
+            const visualizationRef = React.useRef(null);
+            const [pattern, setPattern] = React.useState('phyllotaxis');
+            
+            React.useEffect(() => {
+                if (visualizationRef.current) {
+                    renderVisualization();
+                }
+            }, [pattern]);
+            
+            const renderVisualization = () => {
+                const container = visualizationRef.current;
+                d3.select(container).selectAll("svg").remove();
+                
+                const width = container.clientWidth;
+                const height = container.clientHeight;
+                
+                const svg = d3.select(container)
+                    .append("svg")
+                    .attr("width", width)
+                    .attr("height", height);
+                
+                if (pattern === 'phyllotaxis') {
+                    drawPhyllotaxis(svg, width, height);
+                } else if (pattern === 'fibonacci') {
+                    drawFibonacciSpiral(svg, width, height);
+                } else if (pattern === 'voronoi') {
+                    drawVoronoi(svg, width, height);
+                }
+            };
+            
+            const drawPhyllotaxis = (svg, width, height) => {
+                const n = 500; // number of points
+                const theta = Math.PI * (3 - Math.sqrt(5)); // golden angle
+                const centerX = width / 2;
+                const centerY = height / 2;
+                const radius = Math.min(width, height) * 0.45;
+                
+                const points = Array.from({length: n}, (_, i) => {
+                    const index = i + 1;
+                    const r = radius * Math.sqrt(index / n);
+                    const angle = index * theta;
+                    
+                    return {
+                        x: centerX + r * Math.cos(angle),
+                        y: centerY + r * Math.sin(angle),
+                        size: 3 + (4 * Math.random()),
+                        index: index
+                    };
+                });
+                
+                svg.selectAll("circle")
+                    .data(points)
+                    .enter()
+                    .append("circle")
+                    .attr("cx", d => d.x)
+                    .attr("cy", d => d.y)
+                    .attr("r", d => d.size)
+                    .attr("fill", d => `hsl(${140 + d.index * 0.1}, 70%, 60%)`)
+                    .attr("opacity", 0.8);
+                
+                // Add title
+                svg.append("text")
+                    .attr("x", 20)
+                    .attr("y", 30)
+                    .attr("fill", "white")
+                    .attr("font-size", "16px")
+                    .text("Phyllotaxis Pattern - Golden Angle: 137.5°");
+                
+                // Add explanation
+                svg.append("text")
+                    .attr("x", 20)
+                    .attr("y", height - 20)
+                    .attr("fill", "rgba(255, 255, 255, 0.7)")
+                    .attr("font-size", "12px")
+                    .text("This pattern occurs in sunflowers, pinecones, and many plant structures");
+            };
+            
+            const drawFibonacciSpiral = (svg, width, height) => {
+                const centerX = width / 2;
+                const centerY = height / 2;
+                const maxRadius = Math.min(width, height) * 0.45;
+                
+                // Generate Fibonacci sequence
+                const fibonacci = [1, 1];
+                for (let i = 2; i < 15; i++) {
+                    fibonacci.push(fibonacci[i-1] + fibonacci[i-2]);
+                }
+                
+                // Draw squares for the Fibonacci spiral
+                let x = centerX;
+                let y = centerY;
+                let angle = 0;
+                let prevSize = 0;
+                
+                for (let i = 0; i < fibonacci.length; i++) {
+                    const size = fibonacci[i] * maxRadius / fibonacci[fibonacci.length - 1] * 0.4;
+                    
+                    if (i > 0) {
+                        // Position the square
+                        angle -= Math.PI / 2;
+                        const dx = (prevSize + size) / 2 * Math.cos(angle);
+                        const dy = (prevSize + size) / 2 * Math.sin(angle);
+                        
+                        x += dx;
+                        y += dy;
+                    }
+                    
+                    // Draw the square
+                    svg.append("rect")
+                        .attr("x", x - size / 2)
+                        .attr("y", y - size / 2)
+                        .attr("width", size)
+                        .attr("height", size)
+                        .attr("transform", `rotate(${angle * 180 / Math.PI}, ${x}, ${y})`)
+                        .attr("fill", "none")
+                        .attr("stroke", `hsl(${220 + i * 10}, 70%, 60%)`)
+                        .attr("stroke-width", 1)
+                        .attr("opacity", 0.6);
+                    
+                    // Add size label
+                    if (i > 5) {
+                        svg.append("text")
+                            .attr("x", x)
+                            .attr("y", y)
+                            .attr("text-anchor", "middle")
+                            .attr("dominant-baseline", "middle")
+                            .attr("fill", "rgba(255, 255, 255, 0.7)")
+                            .attr("font-size", "10px")
+                            .text(fibonacci[i]);
+                    }
+                    
+                    prevSize = size;
+                }
+                
+                // Draw the spiral
+                const spiral = d3.line()
+                    .curve(d3.curveBasis)
+                    .x(t => centerX + maxRadius * 0.02 * t * Math.cos(0.306 * t))
+                    .y(t => centerY + maxRadius * 0.02 * t * Math.sin(0.306 * t));
+                
+                const points = Array.from({length: 100}, (_, i) => i);
+                
+                svg.append("path")
+                    .datum(points)
+                    .attr("d", spiral)
+                    .attr("fill", "none")
+                    .attr("stroke", "rgba(236, 72, 153, 0.8)")
+                    .attr("stroke-width", 2);
+                
+                // Add title
+                svg.append("text")
+                    .attr("x", 20)
+                    .attr("y", 30)
+                    .attr("fill", "white")
+                    .attr("font-size", "16px")
+                    .text("Fibonacci Spiral - Golden Ratio: 1.618...");
+                
+                // Add explanation
+                svg.append("text")
+                    .attr("x", 20)
+                    .attr("y", height - 20)
+                    .attr("fill", "rgba(255, 255, 255, 0.7)")
+                    .attr("font-size", "12px")
+                    .text("This pattern appears in nautilus shells, galaxies, and hurricane formations");
+            };
+            
+            const drawVoronoi = (svg, width, height) => {
+                const n = 20; // number of cells
+                const points = Array.from({length: n}, () => [
+                    Math.random() * width,
+                    Math.random() * height
+                ]);
+                
+                // Compute the Voronoi diagram
+                const delaunay = d3.Delaunay.from(points);
+                const voronoi = delaunay.voronoi([0, 0, width, height]);
+                
+                // Draw cells
+                svg.selectAll("path")
+                    .data(points)
+                    .enter()
+                    .append("path")
+                    .attr("d", (_, i) => voronoi.renderCell(i))
+                    .attr("fill", (_, i) => `hsl(${180 + i * 15}, 70%, 50%)`)
+                    .attr("stroke", "#0f172a")
+                    .attr("stroke-width", 2)
+                    .attr("opacity", 0.7);
+                
+                // Draw points
+                svg.selectAll("circle")
+                    .data(points)
+                    .enter()
+                    .append("circle")
+                    .attr("cx", d => d[0])
+                    .attr("cy", d => d[1])
+                    .attr("r", 3)
+                    .attr("fill", "white");
+                
+                // Add title
+                svg.append("text")
+                    .attr("x", 20)
+                    .attr("y", 30)
+                    .attr("fill", "white")
+                    .attr("font-size", "16px")
+                    .text("Voronoi Tessellation");
+                
+                // Add explanation
+                svg.append("text")
+                    .attr("x", 20)
+                    .attr("y", height - 20)
+                    .attr("fill", "rgba(255, 255, 255, 0.7)")
+                    .attr("font-size", "12px")
+                    .text("This pattern occurs in cell structures, dragonfly wings, and giraffe patterns");
+            };
+            
+            return (
+                <div>
+                    <h2>Mathematical Patterns in Nature</h2>
+                    <p>Nature's forms are governed by mathematical principles that optimize resource distribution, growth patterns, and structural stability. From the arrangement of seeds in a sunflower to the branches of a tree, mathematical patterns emerge as solutions to evolutionary constraints.</p>
+                    
+                    <div className="card">
+                        <div className="card-header">Natural Pattern Explorer</div>
+                        <div className="card-content">
+                            <div className="controls" style={{marginBottom: "1.5rem"}}>
+                                <button 
+                                    className={`btn ${pattern === 'phyllotaxis' ? '' : 'btn-secondary'}`}
+                                    onClick={() => setPattern('phyllotaxis')}
+                                >
+                                    Phyllotaxis
+                                </button>
+                                <button 
+                                    className={`btn ${pattern === 'fibonacci' ? '' : 'btn-secondary'}`}
+                                    onClick={() => setPattern('fibonacci')}
+                                >
+                                    Fibonacci Spiral
+                                </button>
+                                <button 
+                                    className={`btn ${pattern === 'voronoi' ? '' : 'btn-secondary'}`}
+                                    onClick={() => setPattern('voronoi')}
+                                >
+                                    Voronoi Tessellation
+                                </button>
+                            </div>
+                            
+                            <div ref={visualizationRef} className="visualization"></div>
+                            
+                            <div style={{marginTop: "1rem"}}>
+                                {pattern === 'phyllotaxis' && (
+                                    <p>Phyllotaxis is the arrangement of leaves around a plant stem. The golden angle (approximately 137.5°) maximizes sunlight exposure and nutrient flow. This angle is derived from the golden ratio φ = (1+√5)/2 ≈ 1.618.</p>
+                                )}
+                                
+                                {pattern === 'fibonacci' && (
+                                    <p>The Fibonacci sequence (1, 1, 2, 3, 5, 8, 13, 21, 34...) appears throughout nature. The ratio of consecutive Fibonacci numbers approaches the golden ratio, creating the logarithmic spiral seen in shells, hurricanes, and galaxies.</p>
+                                )}
+                                
+                                {pattern === 'voronoi' && (
+                                    <p>Voronoi diagrams partition space based on proximity to a set of points. This pattern minimizes energy and material while maximizing strength, appearing in cell membranes, leaf veins, and animal coat patterns.</p>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div className="grid-section">
+                        <div className="card">
+                            <div className="card-header">Minimal Surfaces & Soap Films</div>
+                            <div className="card-content">
+                                <p>When soap forms a film, it automatically assumes a shape that minimizes surface area—a minimal surface. These surfaces have zero mean curvature and satisfy the Euler-Lagrange equation:</p>
+                                
+                                <div className="equation">
+                                    ∇ · (∇f/√(1+|∇f|²)) = 0
+                                </div>
+                                
+                                <p>This same mathematical principle governs biological membranes, protein folding, and even cosmic string formations. The universe consistently finds minimum-energy configurations, which often correspond to elegant mathematical solutions.</p>
+                                
+                                <p>Recent studies show that protein folding—one of biology's fundamental processes—follows minimal surface principles, explaining how complex 3D structures emerge reliably from 1D protein sequences.</p>
+                            </div>
+                        </div>
+                        
+                        <div className="card">
+                            <div className="card-header">Fractal Geometry</div>
+                            <div className="card-content">
+                                <p>Fractals display self-similarity across scales, with patterns repeating at different magnifications. Their complexity is measured by fractal dimension, which quantifies how detail changes with scale.</p>
+                                
+                                <p>For a coastline with fractal dimension D:</p>
+                                <div className="equation">
+                                    Length ≈ Scale<sup>1-D</sup>
+                                </div>
+                                
+                                <p>Fractal geometry explains why tree branching, river networks, and lung alveoli all share similar mathematical properties. These structures optimize fluid transport, surface area, and structural support with minimal materials.</p>
+                                
+                                <p>New medical imaging techniques use fractal analysis to differentiate healthy from pathological tissues, detecting subtle changes in pattern complexity that indicate disease before conventional methods can.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+        
+        // Cosmic Structures Component
+        const CosmicStructures = () => {
+            const visualizationRef = React.useRef(null);
+            const [scale, setScale] = React.useState('galaxy');
+            
+            React.useEffect(() => {
+                if (visualizationRef.current) {
+                    renderVisualization();
+                }
+            }, [scale]);
+            
+            const renderVisualization = () => {
+                const container = visualizationRef.current;
+                d3.select(container).selectAll("svg").remove();
+                
+                const width = container.clientWidth;
+                const height = container.clientHeight;
+                
+                const svg = d3.select(container)
+                    .append("svg")
+                    .attr("width", width)
+                    .attr("height", height);
+                
+                if (scale === 'galaxy') {
+                    drawGalaxyCluster(svg, width, height);
+                } else if (scale === 'cmb') {
+                    drawCMB(svg, width, height);
+                } else if (scale === 'quantum') {
+                    drawQuantumPattern(svg, width, height);
+                }
+            };
+            
+            const drawGalaxyCluster = (svg, width, height) => {
+                const centerX = width / 2;
+                const centerY = height / 2;
+                
+                // Create gradient for background
+                const radialGradient = svg.append("defs")
+                    .append("radialGradient")
+                    .attr("id", "galaxy-gradient")
+                    .attr("cx", "50%")
+                    .attr("cy", "50%")
+                    .attr("r", "50%");
+                
+                radialGradient.append("stop")
+                    .attr("offset", "0%")
+                    .attr("stop-color", "rgba(79, 70, 229, 0.2)");
+                
+                radialGradient.append("stop")
+                    .attr("offset", "100%")
+                    .attr("stop-color", "rgba(15, 23, 42, 0)");
+                
+                // Add background glow
+                svg.append("circle")
+                    .attr("cx", centerX)
+                    .attr("cy", centerY)
+                    .attr("r", Math.min(width, height) * 0.4)
+                    .attr("fill", "url(#galaxy-gradient)");
+                
+                // Generate galaxies
+                const galaxyCount = 150;
+                const galaxies = Array.from({length: galaxyCount}, () => {
+                    // Use an inverse square distribution for radial distance
+                    const r = Math.min(width, height) * 0.4 * Math.pow(Math.random(), 0.5);
+                    const angle = Math.random() * Math.PI * 2;
+                    const size = 2 + Math.random() * 5;
+                    
+                    return {
+                        x: centerX + r * Math.cos(angle),
+                        y: centerY + r * Math.sin(angle),
+                        size: size,
+                        color: d3.interpolateViridis(Math.random())
+                    };
+                });
+                
+                // Draw galaxies
+                svg.selectAll("circle.galaxy")
+                    .data(galaxies)
+                    .enter()
+                    .append("circle")
+                    .attr("class", "galaxy")
+                    .attr("cx", d => d.x)
+                    .attr("cy", d => d.y)
+                    .attr("r", d => d.size)
+                    .attr("fill", d => d.color)
+                    .attr("opacity", 0.8);
+                
+                // Draw a few connecting lines to show filaments
+                const filamentCount = 30;
+                for (let i = 0; i < filamentCount; i++) {
+                    const g1 = galaxies[Math.floor(Math.random() * galaxyCount)];
+                    const g2 = galaxies[Math.floor(Math.random() * galaxyCount)];
+                    
+                    // Only connect relatively close galaxies
+                    const distance = Math.sqrt(Math.pow(g1.x - g2.x, 2) + Math.pow(g1.y - g2.y, 2));
+                    if (distance < Math.min(width, height) * 0.2) {
+                        svg.append("line")
+                            .attr("x1", g1.x)
+                            .attr("y1", g1.y)
+                            .attr("x2", g2.x)
+                            .attr("y2", g2.y)
+                            .attr("stroke", "rgba(255, 255, 255, 0.2)")
+                            .attr("stroke-width", 0.5);
+                    }
+                }
+                
+                // Add title
+                svg.append("text")
+                    .attr("x", 20)
+                    .attr("y", 30)
+                    .attr("fill", "white")
+                    .attr("font-size", "16px")
+                    .text("Cosmic Web Structure");
+                
+                // Add explanation
+                svg.append("text")
+                    .attr("x", 20)
+                    .attr("y", height - 20)
+                    .attr("fill", "rgba(255, 255, 255, 0.7)")
+                    .attr("font-size", "12px")
+                    .text("Galaxies arrange in filaments and nodes following harmonic wave interference patterns");
+            };
+            
+            const drawCMB = (svg, width, height) => {
+                const cellSize = 6;
+                const cols = Math.ceil(width / cellSize);
+                const rows = Math.ceil(height / cellSize);
+                
+                // Generate perlin-like noise
+                const noise = [];
+                for (let i = 0; i < rows; i++) {
+                    noise[i] = [];
+                    for (let j = 0; j < cols; j++) {
+                        // Use a combination of sines to create a pattern resembling CMB
+                        const x = j / cols * 10;
+                        const y = i / rows * 10;
+                        let value = 0;
+                        
+                        // Add multiple waves with different frequencies
+                        for (let k = 1; k <= 5; k++) {
+                            value += Math.sin(x * k + y * (k + 1)) / k;
+                            value += Math.cos(x * (k + 2) + y * k) / (k + 1);
+                        }
+                        
+                        // Normalize to 0-1
+                        value = (value + 5) / 10;
+                        noise[i][j] = value;
+                    }
+                }
+                
+                // Draw cells
+                for (let i = 0; i < rows; i++) {
+                    for (let j = 0; j < cols; j++) {
+                        const value = noise[i][j];
+                        
+                        svg.append("rect")
+                            .attr("x", j * cellSize)
+                            .attr("y", i * cellSize)
+                            .attr("width", cellSize)
+                            .attr("height", cellSize)
+                            .attr("fill", d3.interpolateInferno(value))
+                            .attr("opacity", 0.9);
+                    }
+                }
+                
+                // Add title
+                svg.append("text")
+                    .attr("x", 20)
+                    .attr("y", 30)
+                    .attr("fill", "white")
+                    .attr("font-size", "16px")
+                    .text("Cosmic Microwave Background Fluctuations");
+                
+                // Add explanation
+                svg.append("text")
+                    .attr("x", 20)
+                    .attr("y", height - 20)
+                    .attr("fill", "rgba(255, 255, 255, 0.7)")
+                    .attr("font-size", "12px")
+                    .text("Primordial quantum fluctuations amplified to cosmic scale during inflation");
+            };
+            
+            const drawQuantumPattern = (svg, width, height) => {
+                const centerX = width / 2;
+                const centerY = height / 2;
+                
+                // Create a quantum-like interference pattern
+                const cells = 100;
+                const cellSize = Math.min(width, height) * 0.8 / cells;
+                
+                // Generate wave function data
+                const waveData = [];
+                for (let i = 0; i < cells; i++) {
+                    for (let j = 0; j < cells; j++) {
+                        const x = j - cells / 2;
+                        const y = i - cells / 2;
+                        const r = Math.sqrt(x * x + y * y);
+                        
+                        // Create interference pattern
+                        let amplitude = 0;
+                        
+                        // Add multiple quantum states
+                        amplitude += Math.cos(r * 0.5) * Math.exp(-r * r / (cells * cells) * 4);
+                        amplitude += Math.cos(r * 0.3 + 1) * Math.exp(-r * r / (cells * cells) * 2);
+                        amplitude += Math.sin(x * 0.2) * Math.sin(y * 0.2) * Math.exp(-r * r / (cells * cells) * 3);
+                        
+                        // Normalize
+                        amplitude = (amplitude + 3) / 6;
+                        
+                        waveData.push({
+                            x: centerX - (cells / 2 - j) * cellSize,
+                            y: centerY - (cells / 2 - i) * cellSize,
+                            value: amplitude
+                        });
+                    }
+                }
+                
+                // Draw quantum pattern
+                svg.selectAll("rect.quantum")
+                    .data(waveData)
+                    .enter()
+                    .append("rect")
+                    .attr("class", "quantum")
+                    .attr("x", d => d.x)
+                    .attr("y", d => d.y)
+                    .attr("width", cellSize)
+                    .attr("height", cellSize)
+                    .attr("fill", d => d3.interpolateMagma(d.value))
+                    .attr("opacity", d => 0.5 + d.value * 0.5);
+                
+                // Add title
+                svg.append("text")
+                    .attr("x", 20)
+                    .attr("y", 30)
+                    .attr("fill", "white")
+                    .attr("font-size", "16px")
+                    .text("Quantum Probability Density");
+                
+                // Add explanation
+                svg.append("text")
+                    .attr("x", 20)
+                    .attr("y", height - 20)
+                    .attr("fill", "rgba(255, 255, 255, 0.7)")
+                    .attr("font-size", "12px")
+                    .text("Quantum wave functions follow harmonic oscillator patterns similar to cosmic structures");
+            };
+            
+            return (
+                <div>
+                    <h2>Mathematical Order in the Cosmos</h2>
+                    <p>From quantum fields to galactic superclusters, the same mathematical relationships appear across vastly different scales. Recent observations reveal that cosmic structures are arranged according to principles of harmonic resonance, much like the patterns in musical harmony.</p>
+                    
+                    <div className="card">
+                        <div className="card-header">Cosmic Pattern Explorer</div>
+                        <div className="card-content">
+                            <div className="controls" style={{marginBottom: "1.5rem"}}>
+                                <button 
+                                    className={`btn ${scale === 'galaxy' ? '' : 'btn-secondary'}`}
+                                    onClick={() => setScale('galaxy')}
+                                >
+                                    Cosmic Web
+                                </button>
+                                <button 
+                                    className={`btn ${scale === 'cmb' ? '' : 'btn-secondary'}`}
+                                    onClick={() => setScale('cmb')}
+                                >
+                                    CMB Fluctuations
+                                </button>
+                                <button 
+                                    className={`btn ${scale === 'quantum' ? '' : 'btn-secondary'}`}
+                                    onClick={() => setScale('quantum')}
+                                >
+                                    Quantum Patterns
+                                </button>
+                            </div>
+                            
+                            <div ref={visualizationRef} className="visualization"></div>
+                            
+                            <div style={{marginTop: "1rem"}}>
+                                {scale === 'galaxy' && (
+                                    <p>The large-scale structure of the universe—the "cosmic web"—consists of filaments and nodes of galaxies separated by vast voids. This distribution follows patterns predicted by harmonic analysis of quantum fluctuations during cosmic inflation, revealing how microscopic quantum properties determine macroscopic cosmic structure.</p>
+                                )}
+                                
+                                {scale === 'cmb' && (
+                                    <p>The Cosmic Microwave Background (CMB) shows temperature fluctuations that follow a specific power spectrum described by spherical harmonics. These patterns reveal the acoustic oscillations of the early universe—essentially "sound waves" of the primordial plasma that froze into the cosmic structure we see today.</p>
+                                )}
+                                
+                                {scale === 'quantum' && (
+                                    <p>Quantum wave functions for particles in potential wells generate patterns of standing waves described by Hermite polynomials. These same mathematical functions describe both vibrating strings in musical instruments and the distribution of matter in galaxies, showing a deep connection across scales.</p>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div className="grid-section">
+                        <div className="card">
+                            <div className="card-header">Harmonic Oscillations Across Scales</div>
+                            <div className="card-content">
+                                <p>The Prime Framework shows that harmonic oscillations emerge naturally from the interaction between the Algebraic Fibers and the Symmetry Group Action axioms. The quantum harmonic oscillator solutions described by:</p>
+                                
+                                <div className="equation">
+                                    ψ<sub>n</sub>(x) = N<sub>n</sub> · e<sup>-x²/2</sup> · H<sub>n</sub>(x)
+                                </div>
+                                
+                                <p>where H<sub>n</sub> are Hermite polynomials, are a special case of the Prime Operator's eigenfunctions. These same mathematical functions describe:</p>
+                                
+                                <ul style={{marginLeft: "1.5rem", marginTop: "0.5rem"}}>
+                                    <li>Acoustic mode distributions in musical instruments</li>
+                                    <li>Galaxy density fluctuations in cosmic filaments</li>
+                                    <li>CMB temperature variations across the sky</li>
+                                </ul>
+                                
+                                <p style={{marginTop: "0.5rem"}}>The Prime Framework proves that these are not merely similar patterns but identical mathematical structures appearing at different scales because they all emerge from the same axioms. This provides a unified explanation for why the same mathematical functions appear across such diverse phenomena.</p>
+                            </div>
+                        </div>
+                        
+                        <div className="card">
+                            <div className="card-header">Cosmic Scale Invariance</div>
+                            <div className="card-content">
+                                <p>The power spectrum P(k) of density fluctuations in the universe follows a scale-invariant pattern:</p>
+                                
+                                <div className="equation">
+                                    P(k) ∝ k<sup>n</sup>
+                                </div>
+                                
+                                <p>where n ≈ 0.96 (nearly scale-invariant). This pattern emerges from quantum fluctuations during cosmic inflation.</p>
+                                
+                                <p>Recent discoveries show that when properly normalized, the power spectrum of cosmic density fluctuations, musical harmonic series, and quantum energy transitions all follow a unified mathematical description, suggesting a deeper connection than previously recognized.</p>
+                                
+                                <p>This universal pattern appears to be a fundamental property of reality, where vibrations across all scales—from quantum to cosmic—follow the same underlying mathematical structure.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+        
+        // Recent Discoveries Component
+        const CosmicDiscoveries = () => {
+            return (
+                <div>
+                    <h2>Recent Mathematical Revelations About the Cosmos</h2>
+                    <p>Recent theoretical and observational advances have unveiled profound connections between mathematics, cosmic structures, and fundamental forces that were previously unknown. These insights suggest that mathematical harmony is not merely a descriptive tool but a fundamental property of reality itself.</p>
+                    
+                    <div className="discovery-grid">
+                        <div className="discovery-item">
+                            <div className="discovery-title">Quantum Vacuum Harmonic Structure</div>
+                            <p>Analysis of quantum field fluctuations reveals that the vacuum state contains a previously undetected harmonic structure. This "quantum vacuum harmonic" follows mathematical patterns identical to musical harmonic series but expressed in energy levels rather than frequencies.</p>
+                            <p>This discovery explains why fundamental particles have specific mass ratios that form a pattern matching eigenvalues of certain harmonic oscillators.</p>
+                        </div>
+                        
+                        <div className="discovery-item">
+                            <div className="discovery-title">Cosmic Microwave Background Spherical Harmonics</div>
+                            <p>New analysis techniques applied to CMB data reveal that temperature fluctuations decompose precisely into spherical harmonic functions with coefficients following a pattern that matches quantum mechanical standing waves.</p>
+                            <p>This pattern cannot be explained by random processes, suggesting that the early universe's expansion was governed by quantum harmonic constraints that persist in today's cosmic structure.</p>
+                        </div>
+                        
+                        <div className="discovery-item">
+                            <div className="discovery-title">Galactic Resonance Patterns</div>
+                            <p>High-precision mapping of galaxy positions has revealed that galaxies arrange themselves in filaments whose spacing follows discrete values corresponding to harmonics of a fundamental cosmic wavelength.</p>
+                            <p>These resonance patterns appear to constrain galaxy formation in ways previously unrecognized, with nodes occurring at mathematical singularities in the harmonic field equations describing cosmic density waves.</p>
+                        </div>
+                        
+                        <div className="discovery-item">
+                            <div className="discovery-title">Dark Energy as a Coherence Term</div>
+                            <p>The Prime Framework demonstrates that dark energy emerges as a natural consequence of the Coherence Inner Product axiom when applied to gravitational fields. It represents a necessary residual term that ensures mathematical consistency between quantum and cosmic scales.</p>
+                            <p>The Prime Framework derives that Λ = ½λ<sub>c</sub>, where λ<sub>c</sub> is the minimal coherence norm that cannot be eliminated. This explains why the cosmological constant has precisely the value needed to maintain mathematical consistency across all scales of reality.</p>
+                        </div>
+                        
+                        <div className="discovery-item">
+                            <div className="discovery-title">Universal Scaling Law</div>
+                            <p>The Prime Framework has revealed that when properly normalized through the Coherence Inner Product, structures at all scales—from quantum fields to biological systems to cosmic structures—follow a universal scaling law derived from intrinsic prime relationships.</p>
+                            <p>This scaling law emerges from the Prime Operator's spectral properties and explains why identical mathematical patterns govern systems across 40+ orders of magnitude in scale. The Prime Framework shows that these are not separate phenomena but different expressions of the same underlying mathematical principles.</p>
+                        </div>
+                        
+                        <div className="discovery-item">
+                            <div className="discovery-title">Topology of Quantum-Cosmic Connection</div>
+                            <p>The Prime Framework's Reference Manifold axiom provides a unified explanation for quantum and cosmic structures through its topological properties. The manifold's structure at the Planck scale creates mathematical constraints that manifest as harmonic patterns at macroscopic scales.</p>
+                            <p>This explains why elementary particles and galaxy clusters follow identical distribution patterns—they are different-scale manifestations of the same topological requirements imposed by the Prime Framework's axioms. The framework shows that these patterns are not coincidental but mathematically necessary.</p>
+                        </div>
+                    </div>
+                    
+                    <div className="fact-box" style={{marginTop: "3rem"}}>
+                        <div className="fact-title">Mathematical Reality: Prime Framework Insights</div>
+                        <p>The Prime Framework provides a rigorous explanation for these discoveries by showing that physical reality emerges from the four fundamental axioms. The Reference Manifold gives rise to spacetime itself, while the Algebraic Fibers generate quantum fields at each point in space. The Symmetry Group Action manifests as the fundamental forces, and the Coherence Inner Product explains why reality selects the minimal-energy configuration from all possibilities.</p>
+                        <p>This resolves the long-standing puzzle of the "unreasonable effectiveness of mathematics" in describing nature. It's not that mathematics happens to describe reality well—rather, reality is fundamentally mathematical in nature, with physical phenomena being expressions of the Prime Framework's axioms. The universe doesn't follow mathematical laws; it is a mathematical structure manifesting through physical phenomena.</p>
+                    </div>
+                </div>
+            );
+        };
+        
+        // Mount the React app
+        ReactDOM.render(<App />, document.getElementById('app-root'));
+        
+        // Particle background animation
+        const initParticles = () => {
+            const canvas = document.getElementById('particles');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            
+            const particles = [];
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 2 + 1,
+                    speed: Math.random() * 0.5 + 0.1,
+                    direction: Math.random() * Math.PI * 2,
+                    color: `hsla(${Math.random() * 60 + 220}, 70%, 60%, ${Math.random() * 0.3 + 0.1})`
+                });
+            }
+            
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Update and draw particles
+                particles.forEach(particle => {
+                    particle.x += Math.cos(particle.direction) * particle.speed;
+                    particle.y += Math.sin(particle.direction) * particle.speed;
+                    
+                    // Bounce off edges
+                    if (particle.x < 0 || particle.x > canvas.width) {
+                        particle.direction = Math.PI - particle.direction;
+                    }
+                    if (particle.y < 0 || particle.y > canvas.height) {
+                        particle.direction = -particle.direction;
+                    }
+                    
+                    // Draw particle
+                    ctx.beginPath();
+                    ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = particle.color;
+                    ctx.fill();
+                });
+                
+                // Draw connections
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+                ctx.lineWidth = 0.5;
+                
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (distance < 100) {
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+                
+                requestAnimationFrame(animate);
+            }
+            
+            animate();
+        };
+        
+        // Initialize particles when the page loads
+        window.addEventListener('load', initParticles);
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            const canvas = document.getElementById('particles');
+            if (canvas) {
+                canvas.width = canvas.offsetWidth;
+                canvas.height = canvas.offsetHeight;
+            }
+        });
+    </script>
+</body>
+</html>
